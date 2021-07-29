@@ -140,6 +140,7 @@ namespace OblivionBSAUncompressor
             if (Version == version104 && ArchiveFlags.HasFlag(BSAArchiveFlags.EmbedFileName))
             {
                 binaryWriter.Write((byte)currentFileRecord.FullPath.Length);
+                binaryWriter.Write(Encoding.UTF8.GetBytes(currentFileRecord.FullPath));
             }
 
             currentFileRecord.InvertedCompression = currentFileRecord.BSACompressed ^ (compressLevel != 0);
