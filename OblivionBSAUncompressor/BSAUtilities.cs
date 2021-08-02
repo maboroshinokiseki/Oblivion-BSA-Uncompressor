@@ -69,6 +69,14 @@ namespace OblivionBSAUncompressor
             return uncompressedData;
         }
 
+        internal static void Requires<T>(bool condition, string message) where T: Exception, new()
+        {
+            if (!condition)
+            {
+                throw new BSAException(message, new T());
+            }
+        }
+
         // used to determine if inflater is finished
         static private byte[] tempMem = new byte[8];
     }
