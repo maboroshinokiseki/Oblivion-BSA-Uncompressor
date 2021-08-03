@@ -73,9 +73,7 @@ namespace OblivionBSAUncompressor
                 binaryWriter.Flush();
                 if (archiveFlags.HasFlag(BSAArchiveFlags.HasDirectoryNames))
                 {
-                    binaryWriter.Write((byte)(folder.Name.Length + 1));
-                    binaryWriter.Write(Encoding.UTF8.GetBytes(folder.Name));
-                    binaryWriter.Write((byte)0);
+                    binaryWriter.WriteString(folder.Name, true, true);
                 }
                 binaryWriter.Flush();
 
@@ -94,8 +92,7 @@ namespace OblivionBSAUncompressor
             {
                 foreach (var file in GetFileRecords())
                 {
-                    binaryWriter.Write(Encoding.UTF8.GetBytes(file.Name));
-                    binaryWriter.Write((byte)0);
+                    binaryWriter.WriteString(file.Name, false, true);
                 }
             }
         }
@@ -139,8 +136,7 @@ namespace OblivionBSAUncompressor
             var startOfFileData = binaryWriter.BaseStream.Position;
             if (Version == version104 && ArchiveFlags.HasFlag(BSAArchiveFlags.EmbedFileName))
             {
-                binaryWriter.Write((byte)currentFileRecord.FullPath.Length);
-                binaryWriter.Write(Encoding.UTF8.GetBytes(currentFileRecord.FullPath));
+                binaryWriter.WriteString(currentFileRecord.FullPath, true, false);
             }
 
             currentFileRecord.InvertedCompression = currentFileRecord.BSACompressed ^ (compressLevel != 0);
@@ -244,14 +240,7 @@ namespace OblivionBSAUncompressor
                 var folderName = string.Empty;
                 if (ArchiveFlags.HasFlag(BSAArchiveFlags.HasDirectoryNames))
                 {
-                    var length = binaryReader.ReadByte();
-                    if (length > 0)
-                    {
-                        folderName = binaryReader.ReadString(length - 1);
-
-                        // skip \0
-                        binaryReader.ReadByte();
-                    }
+                    folderName = binaryReader.ReadString(true, true);
                 }
 
                 folder.Name = folderName;
@@ -285,7 +274,7 @@ namespace OblivionBSAUncompressor
             {
                 foreach (var file in folder.FileRecords)
                 {
-                    var name = binaryReader.ReadNullTerminatedString();
+                    var name = binaryReader.ReadString(false, true);
                     if (file.NameHash != BSAUtilities.GetHash(name))
                     {
                         throw new InvalidDataException("File name hash not matching file name");
