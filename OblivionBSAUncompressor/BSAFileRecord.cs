@@ -93,9 +93,19 @@ namespace OblivionBSAUncompressor
 
             var data = new byte[dataSize];
 
-            inputStream.Seek(dataOffset, SeekOrigin.Begin);
-            inputStream.Read(data, 0, (int)dataSize);
+            GetRawFileData(inputStream, dataOffset, dataSize, data);
+
             return data;
+        }
+
+        public void GetRawFileData(Stream inputStream, uint fileDataOffset, uint fileDataSize, byte[] destination, int offset = 0)
+        {
+            BSAUtilities.Ensures<ArgumentOutOfRangeException>(offset >= 0, "Offset must not be less than 0.");
+
+            BSAUtilities.Ensures<ArgumentException>(destination.Length - offset >= fileDataSize, "Not enough space in destination buffer.");
+
+            inputStream.Seek(fileDataOffset, SeekOrigin.Begin);
+            inputStream.Read(destination, offset, (int)fileDataSize);
         }
 
         public byte[] GetUncompressedFileData(Stream inputStream)

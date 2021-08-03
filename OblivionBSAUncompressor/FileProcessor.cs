@@ -1,5 +1,6 @@
 ﻿using LiquidEngine.Tools;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,7 @@ namespace OblivionBSAUncompressor
 
         // preserved space for header.
         private const int preservedSpace = 1024 * 1024 * 8;
+        private static ArrayPool<byte> arrayPool = ArrayPool<byte>.Create(1024 * 1024 * 32, 16);
 
         public FileProcessor(bool loadToMemory,
                              bool multithreaded,
@@ -71,12 +73,15 @@ namespace OblivionBSAUncompressor
                         cancellationToken.ThrowIfCancellationRequested();
 
                         var inputFileRecord = filesInBsa[outputFileRecord.FullPath];
-                        var originalData = inputFileRecord.GetRawFileData(inputStream, out var uncompressedSize);
+                        inputFileRecord.GetDataInfo(inputStream, out var fileOffset, out var fileSize, out var uncompressedSize);
+                        var originalData = arrayPool.Rent((int)fileSize);
+                        inputFileRecord.GetRawFileData(inputStream, fileOffset, fileSize, originalData);
                         originalFileDataList.Add(new FileBlockData
                         {
                             InputFileRecord = inputFileRecord,
                             UncompressedSize = uncompressedSize,
-                            Data = originalData
+                            RawDataSize = fileSize,
+                            RawData = originalData
                         }, cancellationToken);
                     }
                 }
@@ -84,7 +89,7 @@ namespace OblivionBSAUncompressor
                 originalFileDataList.CompleteAdding();
             }, cancellationToken);
 
-            var decompressedDataMap = new ConcurrentDictionary<string, byte[]>();
+            var decompressedDataMap = new ConcurrentDictionary<string, FileBlockData>();
             var DecompressTasks = new List<Task>(maxTaskCount);
             for (int i = 0; i < maxTaskCount; i++)
             {
@@ -94,15 +99,17 @@ namespace OblivionBSAUncompressor
                     {
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        if (originalFileDataList.TryTake(out var item, 128))
+                        if (originalFileDataList.TryTake(out var item, 64))
                         {
-                            var data = item.Data;
+                            item.UncompressedData = item.RawData;
                             if (item.InputFileRecord.SelfCompressed)
                             {
-                                data = BSAUtilities.DecompressData(data, (int)item.UncompressedSize);
+                                var uncompressedData = arrayPool.Rent((int)item.UncompressedSize);
+                                BSAUtilities.DecompressData(item.RawData, 0, (int)item.RawDataSize, (int)item.UncompressedSize, uncompressedData);
+                                item.UncompressedData = uncompressedData;
                             }
 
-                            decompressedDataMap.TryAdd(item.InputFileRecord.FullPath, data);
+                            decompressedDataMap.TryAdd(item.InputFileRecord.FullPath, item);
                             newDataEvent.Set();
                         }
 
@@ -130,15 +137,20 @@ namespace OblivionBSAUncompressor
                             break;
                         }
 
-                        byte[] data;
+                        FileBlockData fileBlockData;
 
-                        while (!decompressedDataMap.TryGetValue(fileRecord.FullPath, out data))
+                        while (!decompressedDataMap.TryRemove(fileRecord.FullPath, out fileBlockData))
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            newDataEvent.WaitOne(128);
+                            newDataEvent.WaitOne(64);
                         }
 
-                        outputBsa.WriteFileData(data);
+                        outputBsa.WriteFileData(fileBlockData.UncompressedData, 0, (int)fileBlockData.UncompressedSize);
+                        arrayPool.Return(fileBlockData.RawData);
+                        if (fileBlockData.RawData != fileBlockData.UncompressedData)
+                        {
+                            arrayPool.Return(fileBlockData.UncompressedData);
+                        }
 
                         callback?.Invoke(++processedCount);
                     }
@@ -337,7 +349,9 @@ namespace OblivionBSAUncompressor
         {
             public BSAFileRecord InputFileRecord;
             public uint UncompressedSize;
-            public byte[] Data;
+            public uint RawDataSize;
+            public byte[] RawData;
+            public byte[] UncompressedData;
         }
 
         private class OutputBSAData

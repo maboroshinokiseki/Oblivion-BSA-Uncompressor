@@ -54,22 +54,30 @@ namespace OblivionBSAUncompressor
             return (((ulong)(hash2 + hash3)) << 32) + hash1;
         }
 
+        public static void DecompressData(byte[] compressedData, int inputIndex, int inputCount, int uncompressedSize, byte[] destination, int outputIndex = 0)
+        {
+            Ensures<ArgumentOutOfRangeException>(inputIndex >= 0 && outputIndex >= 0, "Index must not be less than 0.");
+
+            Ensures<ArgumentException>(destination.Length - outputIndex >= uncompressedSize, "Not enough space in destination buffer.");
+
+            var inflater = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
+            inflater.SetInput(compressedData, inputIndex, inputCount);
+            var bytesWritten = inflater.Inflate(destination);
+            var extBytes = inflater.Inflate(tempMem);
+
+            Ensures<ArgumentException>(extBytes == 0, "Incorrect uncompressedSize");
+        }
+
         public static byte[] DecompressData(byte[] compressedData, int uncompressedSize)
         {
             var uncompressedData = new byte[uncompressedSize];
-            var inflater = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater();
-            inflater.SetInput(compressedData);
-            var bytesWritten = inflater.Inflate(uncompressedData);
-            var extBytes = inflater.Inflate(tempMem);
-            if (extBytes > 0)
-            {
-                throw new ArgumentException("Incorrect uncompressedSize ");
-            }
+
+            DecompressData(compressedData, 0, compressedData.Length, uncompressedSize, uncompressedData, 0);
 
             return uncompressedData;
         }
 
-        internal static void Requires<T>(bool condition, string message) where T: Exception, new()
+        internal static void Ensures<T>(bool condition, string message) where T : Exception, new()
         {
             if (!condition)
             {
@@ -78,6 +86,6 @@ namespace OblivionBSAUncompressor
         }
 
         // used to determine if inflater is finished
-        static private byte[] tempMem = new byte[8];
+        private static readonly byte[] tempMem = new byte[8];
     }
 }

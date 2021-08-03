@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace OblivionBSAUncompressor
 {
@@ -113,7 +112,7 @@ namespace OblivionBSAUncompressor
             }
         }
 
-        public void WriteFileData(byte[] data, int compressLevel = 0)
+        public void WriteFileData(byte[] data, int index, int count, int compressLevel = 0)
         {
             if (currentFolderIndex == -1)
             {
@@ -143,17 +142,19 @@ namespace OblivionBSAUncompressor
 
             if (compressLevel > 0)
             {
+                binaryWriter.Write((uint)(count - index));
+
                 var deflater = new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(compressLevel);
-                deflater.SetInput(data);
+                deflater.SetInput(data, index, count);
                 deflater.Finish();
                 var compressedData = new byte[data.Length * 2];
                 var compressedSize = deflater.Deflate(compressedData);
-                Array.Resize(ref compressedData, compressedSize);
                 dataToWrite = compressedData;
-                binaryWriter.Write(compressedSize);
+                index = 0;
+                count = compressedSize;
             }
 
-            binaryWriter.Write(dataToWrite);
+            binaryWriter.Write(dataToWrite, index, count);
             var endOfFileData = binaryWriter.BaseStream.Position;
             currentFileRecord.RealFileSize = (uint)(endOfFileData - startOfFileData);
             currentFileRecord.FileDataOffset = (uint)startOfFileData;
