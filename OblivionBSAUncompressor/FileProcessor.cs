@@ -20,10 +20,11 @@ namespace OblivionBSAUncompressor
         private readonly int maxTaskCount;
         private readonly uint splitSize;
         private readonly bool dummyEsp;
+        private readonly CurrentGame currentGame;
 
         // preserved space for header.
         private const int preservedSpace = 1024 * 1024 * 8;
-        private static ArrayPool<byte> arrayPool = ArrayPool<byte>.Create(1024 * 1024 * 32, 16);
+        private static readonly ArrayPool<byte> arrayPool = ArrayPool<byte>.Create(1024 * 1024 * 32, 16);
 
         public FileProcessor(bool loadToMemory,
                              bool multithreaded,
@@ -31,7 +32,8 @@ namespace OblivionBSAUncompressor
                              bool sameAsOrigin,
                              string destinationFolder,
                              uint splitSize,
-                             bool dummyEsp)
+                             bool dummyEsp,
+                             CurrentGame currentGame)
         {
             this.loadToMemory = loadToMemory;
             this.multithreaded = multithreaded;
@@ -40,6 +42,7 @@ namespace OblivionBSAUncompressor
             this.destinationFolder = destinationFolder;
             this.splitSize = splitSize;
             this.dummyEsp = dummyEsp;
+            this.currentGame = currentGame;
 
             maxTaskCount = Environment.ProcessorCount - 2;
             if (maxTaskCount < 1 || !multithreaded)
@@ -209,7 +212,14 @@ namespace OblivionBSAUncompressor
                                 File.Move(outputData.TempFilePath, finalFilePath);
                                 if (dummyEsp)
                                 {
-                                    using var dummy = this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummyOblivion.esp");
+                                    using var dummy = currentGame switch
+                                    {
+                                        CurrentGame.Oblivion => this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummyOblivion.esp"),
+                                        CurrentGame.Fallout3 => this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummyFallout3.esp"),
+                                        CurrentGame.FalloutNV => this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummyFalloutNV.esp"),
+                                        CurrentGame.Skyrim => this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummySkyrim.esp"),
+                                        _ => this.GetType().Assembly.GetManifestResourceStream("OblivionBSAUncompressor.dummyEsp.DummyOblivion.esp"),
+                                    };
                                     var dummyPath = Path.Combine(destinationFolder, $"{finalfileNameNoExt}.esp");
                                     if (!File.Exists(dummyPath))
                                     {

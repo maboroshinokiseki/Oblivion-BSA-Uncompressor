@@ -129,7 +129,7 @@
   <data name="checkBox_LoadWholeFileToMemory.ToolTip" xml:space="preserve">
     <value>Load bsa files to memeroy before doing anything else, may improve perfermance if bsa files are on hdd, but will use alot of memory. Either choose this option or save to memory option, no need to choose both.</value>
   </data>
-  <metadata name="toolTip_MainForm.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>208, 17</value>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>25</value>
   </metadata>
 </root>

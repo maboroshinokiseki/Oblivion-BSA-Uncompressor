@@ -200,6 +200,7 @@
     <Compile Include="BSAFileRecord.cs" />
     <Compile Include="BSAFolderRecord.cs" />
     <Compile Include="BSAUtilities.cs" />
+    <Compile Include="CurrentGame.cs" />
     <Compile Include="FileListItem.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="FileStatus.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
@@ -235,6 +237,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="dummyEsp\DummyOblivion.esp" />
+    <EmbeddedResource Include="dummyEsp\DummyFallout3.esp" />
+    <EmbeddedResource Include="dummyEsp\DummyFalloutNV.esp" />
+    <EmbeddedResource Include="dummyEsp\DummySkyrim.esp" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

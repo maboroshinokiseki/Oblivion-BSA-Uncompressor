@@ -51,17 +51,21 @@ namespace OblivionBSAUncompressor
             this.numericUpDown_BsaSplitSize = new System.Windows.Forms.NumericUpDown();
             this.label_BsaSplitGB = new System.Windows.Forms.Label();
             this.button_Start = new System.Windows.Forms.Button();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBox_DummyPluginGeneration = new System.Windows.Forms.CheckBox();
+            this.comboBox_CurrentGame = new System.Windows.Forms.ComboBox();
             this.toolTip_MainForm = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel_Main.SuspendLayout();
             this.contextMenuStrip_FileList.SuspendLayout();
             this.tableLayoutPanel_ResultFolder.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_BsaSplitSize)).BeginInit();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel_Main
             // 
+            this.tableLayoutPanel_Main.AutoSize = true;
             this.tableLayoutPanel_Main.ColumnCount = 1;
             this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel_Main.Controls.Add(this.listView_Files, 0, 0);
@@ -71,8 +75,7 @@ namespace OblivionBSAUncompressor
             this.tableLayoutPanel_Main.Controls.Add(this.tableLayoutPanel_ResultFolder, 0, 1);
             this.tableLayoutPanel_Main.Controls.Add(this.flowLayoutPanel1, 0, 5);
             this.tableLayoutPanel_Main.Controls.Add(this.button_Start, 0, 7);
-            this.tableLayoutPanel_Main.Controls.Add(this.checkBox_DummyPluginGeneration, 0, 6);
-            this.tableLayoutPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel_Main.Controls.Add(this.flowLayoutPanel2, 0, 6);
             this.tableLayoutPanel_Main.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel_Main.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel_Main.Name = "tableLayoutPanel_Main";
@@ -85,7 +88,8 @@ namespace OblivionBSAUncompressor
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel_Main.Size = new System.Drawing.Size(600, 366);
+            this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel_Main.Size = new System.Drawing.Size(600, 471);
             this.tableLayoutPanel_Main.TabIndex = 1;
             // 
             // listView_Files
@@ -100,7 +104,7 @@ namespace OblivionBSAUncompressor
             this.listView_Files.Location = new System.Drawing.Point(2, 2);
             this.listView_Files.Margin = new System.Windows.Forms.Padding(2);
             this.listView_Files.Name = "listView_Files";
-            this.listView_Files.Size = new System.Drawing.Size(596, 196);
+            this.listView_Files.Size = new System.Drawing.Size(596, 290);
             this.listView_Files.TabIndex = 0;
             this.listView_Files.UseCompatibleStateImageBehavior = false;
             this.listView_Files.View = System.Windows.Forms.View.Details;
@@ -142,7 +146,7 @@ namespace OblivionBSAUncompressor
             // 
             this.checkBox_UseMemoryStream.AutoSize = true;
             this.checkBox_UseMemoryStream.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBox_UseMemoryStream.Location = new System.Drawing.Point(2, 272);
+            this.checkBox_UseMemoryStream.Location = new System.Drawing.Point(2, 366);
             this.checkBox_UseMemoryStream.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox_UseMemoryStream.Name = "checkBox_UseMemoryStream";
             this.checkBox_UseMemoryStream.Size = new System.Drawing.Size(596, 17);
@@ -155,7 +159,7 @@ namespace OblivionBSAUncompressor
             // 
             this.checkBox_Multithreaded.AutoSize = true;
             this.checkBox_Multithreaded.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBox_Multithreaded.Location = new System.Drawing.Point(2, 251);
+            this.checkBox_Multithreaded.Location = new System.Drawing.Point(2, 345);
             this.checkBox_Multithreaded.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox_Multithreaded.Name = "checkBox_Multithreaded";
             this.checkBox_Multithreaded.Size = new System.Drawing.Size(596, 17);
@@ -168,7 +172,7 @@ namespace OblivionBSAUncompressor
             // 
             this.checkBox_LoadWholeFileToMemory.AutoSize = true;
             this.checkBox_LoadWholeFileToMemory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBox_LoadWholeFileToMemory.Location = new System.Drawing.Point(2, 230);
+            this.checkBox_LoadWholeFileToMemory.Location = new System.Drawing.Point(2, 324);
             this.checkBox_LoadWholeFileToMemory.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox_LoadWholeFileToMemory.Name = "checkBox_LoadWholeFileToMemory";
             this.checkBox_LoadWholeFileToMemory.Size = new System.Drawing.Size(596, 17);
@@ -189,7 +193,7 @@ namespace OblivionBSAUncompressor
             this.tableLayoutPanel_ResultFolder.Controls.Add(this.button_SelectFolder, 2, 0);
             this.tableLayoutPanel_ResultFolder.Controls.Add(this.checkBox_SameAsOriginalFolder, 3, 0);
             this.tableLayoutPanel_ResultFolder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel_ResultFolder.Location = new System.Drawing.Point(2, 202);
+            this.tableLayoutPanel_ResultFolder.Location = new System.Drawing.Point(2, 296);
             this.tableLayoutPanel_ResultFolder.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel_ResultFolder.Name = "tableLayoutPanel_ResultFolder";
             this.tableLayoutPanel_ResultFolder.RowCount = 1;
@@ -250,7 +254,7 @@ namespace OblivionBSAUncompressor
             this.flowLayoutPanel1.Controls.Add(this.numericUpDown_BsaSplitSize);
             this.flowLayoutPanel1.Controls.Add(this.label_BsaSplitGB);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(2, 293);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(2, 387);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(596, 26);
@@ -293,7 +297,7 @@ namespace OblivionBSAUncompressor
         "les, default value is 1.8 GB instead of 2 GB just in case, you can set it from 0" +
         ".1 GB to 2 GB if you like.");
             this.numericUpDown_BsaSplitSize.Value = new decimal(new int[] {
-            18,
+            20,
             0,
             0,
             65536});
@@ -310,7 +314,7 @@ namespace OblivionBSAUncompressor
             // 
             // button_Start
             // 
-            this.button_Start.Location = new System.Drawing.Point(2, 344);
+            this.button_Start.Location = new System.Drawing.Point(2, 449);
             this.button_Start.Margin = new System.Windows.Forms.Padding(2);
             this.button_Start.Name = "button_Start";
             this.button_Start.Size = new System.Drawing.Size(56, 20);
@@ -319,12 +323,22 @@ namespace OblivionBSAUncompressor
             this.button_Start.UseVisualStyleBackColor = true;
             this.button_Start.Click += new System.EventHandler(this.button_Start_Click);
             // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.checkBox_DummyPluginGeneration);
+            this.flowLayoutPanel2.Controls.Add(this.comboBox_CurrentGame);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 418);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(594, 26);
+            this.flowLayoutPanel2.TabIndex = 8;
+            // 
             // checkBox_DummyPluginGeneration
             // 
             this.checkBox_DummyPluginGeneration.AutoSize = true;
             this.checkBox_DummyPluginGeneration.Checked = true;
             this.checkBox_DummyPluginGeneration.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_DummyPluginGeneration.Location = new System.Drawing.Point(2, 323);
+            this.checkBox_DummyPluginGeneration.Location = new System.Drawing.Point(2, 2);
             this.checkBox_DummyPluginGeneration.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox_DummyPluginGeneration.Name = "checkBox_DummyPluginGeneration";
             this.checkBox_DummyPluginGeneration.Size = new System.Drawing.Size(219, 17);
@@ -333,13 +347,23 @@ namespace OblivionBSAUncompressor
             this.toolTip_MainForm.SetToolTip(this.checkBox_DummyPluginGeneration, "Generate dummy esp files for splited bsa files, otherwise you will have to add bs" +
         "a files to Oblivion.ini by yourself.");
             this.checkBox_DummyPluginGeneration.UseVisualStyleBackColor = true;
+            this.checkBox_DummyPluginGeneration.CheckedChanged += new System.EventHandler(this.checkBox_DummyPluginGeneration_CheckedChanged);
+            // 
+            // comboBox_CurrentGame
+            // 
+            this.comboBox_CurrentGame.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_CurrentGame.FormattingEnabled = true;
+            this.comboBox_CurrentGame.Location = new System.Drawing.Point(226, 3);
+            this.comboBox_CurrentGame.Name = "comboBox_CurrentGame";
+            this.comboBox_CurrentGame.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_CurrentGame.TabIndex = 8;
             // 
             // MainForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 366);
+            this.ClientSize = new System.Drawing.Size(600, 473);
             this.Controls.Add(this.tableLayoutPanel_Main);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
@@ -354,7 +378,10 @@ namespace OblivionBSAUncompressor
             this.tableLayoutPanel_ResultFolder.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_BsaSplitSize)).EndInit();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -377,11 +404,13 @@ namespace OblivionBSAUncompressor
         private System.Windows.Forms.Label label_BsaSplitDesc;
         private System.Windows.Forms.NumericUpDown numericUpDown_BsaSplitSize;
         private System.Windows.Forms.Label label_BsaSplitGB;
-        private System.Windows.Forms.CheckBox checkBox_DummyPluginGeneration;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip_FileList;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_RemoveSelected;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_RemoveAll;
         private System.Windows.Forms.ToolTip toolTip_MainForm;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.CheckBox checkBox_DummyPluginGeneration;
+        private System.Windows.Forms.ComboBox comboBox_CurrentGame;
     }
 }
 

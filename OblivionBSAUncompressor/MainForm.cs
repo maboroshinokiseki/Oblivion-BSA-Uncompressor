@@ -8,15 +8,39 @@ namespace OblivionBSAUncompressor
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        private MainForm()
         {
             InitializeComponent();
         }
 
-        private List<FileListItem> fileList = new();
-        private HashSet<string> addedFiles = new();
+        public MainForm(CurrentGame currentGame) : this()
+        {
+            Text = currentGame switch
+            {
+                CurrentGame.Oblivion => "Oblivion BSA Uncompressor",
+                CurrentGame.Fallout3 => "Fallout 3 BSA Uncompressor",
+                CurrentGame.FalloutNV => "Fallout New Vegas BSA Uncompressor",
+                CurrentGame.Skyrim => "Skyrim BSA Uncompressor",
+                _ => "Oblivion BSA Uncompressor",
+            };
 
-        private bool tryAddFile(string file)
+            gameList.Add(new KeyValuePair<string, CurrentGame>("Oblivion", CurrentGame.Oblivion));
+            gameList.Add(new KeyValuePair<string, CurrentGame>("Fallout 3", CurrentGame.Fallout3));
+            gameList.Add(new KeyValuePair<string, CurrentGame>("Fallout NV", CurrentGame.FalloutNV));
+            gameList.Add(new KeyValuePair<string, CurrentGame>("Skyrim", CurrentGame.Skyrim));
+
+            foreach (var item in gameList)
+            {
+                comboBox_CurrentGame.Items.Add(item.Key);
+            }
+            comboBox_CurrentGame.SelectedIndex = gameList.FindIndex(kv => kv.Value == currentGame);
+        }
+
+        private readonly List<FileListItem> fileList = new();
+        private readonly HashSet<string> addedFiles = new();
+        private readonly List<KeyValuePair<string, CurrentGame>> gameList = new();
+
+        private bool TryAddFile(string file)
         {
             if (addedFiles.Add(file))
             {
@@ -32,7 +56,7 @@ namespace OblivionBSAUncompressor
             return false;
         }
 
-        private bool tryRemoveFile(string file)
+        private bool TryRemoveFile(string file)
         {
             if (addedFiles.Remove(file))
             {
@@ -91,7 +115,7 @@ namespace OblivionBSAUncompressor
             var needUpdate = false;
             foreach (var file in bsaFiles)
             {
-                needUpdate |= tryAddFile(file);
+                needUpdate |= TryAddFile(file);
             }
 
             if (needUpdate)
@@ -130,6 +154,8 @@ namespace OblivionBSAUncompressor
                 }
             }
 
+            var currentGame = gameList[comboBox_CurrentGame.SelectedIndex].Value;
+
             var progressForm = new ProgressForm(fileList,
                                                 checkBox_LoadWholeFileToMemory.Checked,
                                                 checkBox_Multithreaded.Checked,
@@ -137,7 +163,8 @@ namespace OblivionBSAUncompressor
                                                 (uint)(1024 * 1024 * 1024 * numericUpDown_BsaSplitSize.Value),
                                                 checkBox_DummyPluginGeneration.Checked,
                                                 sameAsOriginal,
-                                                textBox_Folder.Text);
+                                                textBox_Folder.Text,
+                                                currentGame);
 
             progressForm.ShowDialog(this);
 
@@ -165,7 +192,7 @@ namespace OblivionBSAUncompressor
         {
             for (int i = 0; i < listView_Files.SelectedItems.Count; i++)
             {
-                tryRemoveFile(listView_Files.SelectedItems[i].Text);
+                TryRemoveFile(listView_Files.SelectedItems[i].Text);
             }
 
             RefreshFileList();
@@ -175,7 +202,7 @@ namespace OblivionBSAUncompressor
         {
             for (int i = 0; i < listView_Files.Items.Count; i++)
             {
-                tryRemoveFile(listView_Files.Items[i].Text);
+                TryRemoveFile(listView_Files.Items[i].Text);
             }
 
             RefreshFileList();
@@ -190,6 +217,11 @@ namespace OblivionBSAUncompressor
                 toolStripMenuItem_RemoveSelected.Enabled = haveSelection;
                 toolStripMenuItem_RemoveAll.Enabled = haveItems;
             }
+        }
+
+        private void checkBox_DummyPluginGeneration_CheckedChanged(object sender, EventArgs e)
+        {
+            comboBox_CurrentGame.Enabled = checkBox_DummyPluginGeneration.Checked;
         }
     }
 }

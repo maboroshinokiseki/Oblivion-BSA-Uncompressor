@@ -22,7 +22,8 @@ namespace OblivionBSAUncompressor
                             uint splitSize,
                             bool dummyEsp,
                             bool sameAsOrigin,
-                            string destinationFolder) : this()
+                            string destinationFolder,
+                            CurrentGame currentGame) : this()
         {
             this.fileList = fileList.Where(f => f.FileStatus == FileStatus.NotProcessed || f.FileStatus == FileStatus.Error).ToList();
             this.loadToMemory = loadToMemory;
@@ -32,6 +33,7 @@ namespace OblivionBSAUncompressor
             this.sameAsOrigin = sameAsOrigin;
             this.destinationFolder = destinationFolder;
             this.dummyEsp = dummyEsp;
+            this.currentGame = currentGame;
         }
 
         private readonly List<FileListItem> fileList;
@@ -42,6 +44,7 @@ namespace OblivionBSAUncompressor
         private readonly bool sameAsOrigin;
         private readonly string destinationFolder;
         private readonly bool dummyEsp;
+        private readonly CurrentGame currentGame;
         private readonly ProgressUIVariable uiVariable = new();
 
         private readonly CancellationTokenSource cancellationTokenSource = new();
@@ -72,7 +75,7 @@ namespace OblivionBSAUncompressor
 
             timer_GUIUpdater.Enabled = true;
 
-            var fileProcessor = new FileProcessor(loadToMemory, multithreaded, useMemoryStream, sameAsOrigin, destinationFolder, splitSize, dummyEsp);
+            var fileProcessor = new FileProcessor(loadToMemory, multithreaded, useMemoryStream, sameAsOrigin, destinationFolder, splitSize, dummyEsp, currentGame);
             for (int i = 0; i < fileList.Count; i++)
             {
                 var file = fileList[i];

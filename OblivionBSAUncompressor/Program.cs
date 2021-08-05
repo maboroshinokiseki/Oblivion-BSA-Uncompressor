@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace OblivionBSAUncompressor
@@ -14,9 +12,24 @@ namespace OblivionBSAUncompressor
         [STAThread]
         static void Main()
         {
+            var fileName = AppDomain.CurrentDomain.FriendlyName.ToLower();
+            var currentGame = CurrentGame.Oblivion;
+            if (Regex.IsMatch(fileName, @"(fallout|fo)\s*3"))
+            {
+                currentGame = CurrentGame.Fallout3;
+            }
+            else if (Regex.IsMatch(fileName, @"(fallout|fo|f)\s*(new\s*vegas|nv)"))
+            {
+                currentGame = CurrentGame.FalloutNV;
+            }
+            else if (fileName.IndexOf("skyrim") != -1)
+            {
+                currentGame = CurrentGame.Skyrim;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new MainForm(currentGame));
         }
     }
 }
