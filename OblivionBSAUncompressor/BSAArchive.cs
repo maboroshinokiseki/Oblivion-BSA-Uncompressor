@@ -7,7 +7,7 @@ namespace OblivionBSAUncompressor
 {
     class BSAArchive
     {
-        public uint Version { get; set; }
+        public uint Version { get; private set; }
         public BSAArchiveFlags ArchiveFlags { get; private set; }
         public uint HeaderSize { get; private set; }
         public bool Compressed { get; private set; }
