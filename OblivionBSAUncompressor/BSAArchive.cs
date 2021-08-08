@@ -374,10 +374,7 @@ namespace OblivionBSAUncompressor
 
                 if (!folderToFolderRecordMap.TryGetValue(directoryName, out var folderRecord))
                 {
-                    folderRecord = new BSAFolderRecord(directoryName)
-                    {
-                        TotalFileNameLength = TotalFileNameLength
-                    };
+                    folderRecord = new BSAFolderRecord(directoryName, TotalFileNameLength);
                     folderToFolderRecordMap[directoryName] = folderRecord;
                     folderToFileRecordsMap[directoryName] = new List<BSAFileRecord>();
                 }

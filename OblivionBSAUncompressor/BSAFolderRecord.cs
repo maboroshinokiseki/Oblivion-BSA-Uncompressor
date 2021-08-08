@@ -4,9 +4,10 @@ namespace OblivionBSAUncompressor
 {
     class BSAFolderRecord: IComparable<BSAFolderRecord>
     {
-        public BSAFolderRecord(string name)
+        public BSAFolderRecord(string name, uint totalFileNameLength)
         {
             SetNameWithHash(name);
+            TotalFileNameLength = totalFileNameLength;
         }
 
         public BSAFolderRecord(ulong nameHash, uint fileCount, uint fileRecordsOffset, uint totalFileNameLength)
@@ -26,7 +27,7 @@ namespace OblivionBSAUncompressor
             get => FileRecordsOffset - TotalFileNameLength;
             internal set => FileRecordsOffset = value + TotalFileNameLength;
         }
-        public uint TotalFileNameLength { get; internal set; }
+        public uint TotalFileNameLength { get; private set; }
         public BSAFileRecord[] FileRecords { get; internal set; }
 
         public int CompareTo(BSAFolderRecord other)
