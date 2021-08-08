@@ -21,6 +21,8 @@ namespace OblivionBSAUncompressor
 
         public BSAArchive(Stream input)
         {
+            this.writable = false;
+
             var binaryReader = new BinaryReader(input);
 
             ReadHeader(binaryReader);
@@ -244,7 +246,7 @@ namespace OblivionBSAUncompressor
                     folderName = binaryReader.ReadString(true, true);
                 }
 
-                folder.Name = folderName;
+                folder.SetName(folderName, false);
                 if (folder.NameHash != BSAUtilities.GetHash(folderName, string.Empty))
                 {
                     throw new InvalidDataException("Folder name hash not matching folder name");

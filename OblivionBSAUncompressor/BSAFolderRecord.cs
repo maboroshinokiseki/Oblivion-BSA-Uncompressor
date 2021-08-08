@@ -2,11 +2,11 @@
 
 namespace OblivionBSAUncompressor
 {
-    class BSAFolderRecord: IComparable<BSAFolderRecord>
+    class BSAFolderRecord : IComparable<BSAFolderRecord>
     {
         public BSAFolderRecord(string name, uint totalFileNameLength)
         {
-            SetNameWithHash(name);
+            SetName(name);
             TotalFileNameLength = totalFileNameLength;
         }
 
@@ -18,8 +18,8 @@ namespace OblivionBSAUncompressor
             TotalFileNameLength = totalFileNameLength;
         }
 
-        public ulong NameHash { get; internal set; }
-        public string Name { get; internal set; }
+        public ulong NameHash { get; private set; }
+        public string Name { get; private set; }
         public uint FileCount { get; internal set; }
         public uint FileRecordsOffset { get; internal set; }
         public uint RealFileRecordsOffset
@@ -35,10 +35,13 @@ namespace OblivionBSAUncompressor
             return NameHash.CompareTo(other.NameHash);
         }
 
-        public void SetNameWithHash(string name)
+        public void SetName(string name, bool setHash = true)
         {
             Name = name;
-            NameHash = BSAUtilities.GetHash(name, string.Empty);
+            if (setHash)
+            {
+                NameHash = BSAUtilities.GetHash(name, string.Empty);
+            }
         }
     }
 }
